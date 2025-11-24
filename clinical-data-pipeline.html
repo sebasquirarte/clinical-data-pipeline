@@ -111,7 +111,7 @@ It simulates the process used in regulated clinical environments (CDISC/SDTM) to
 <li><a href="#1-imports">Imports</a></li>
 <li><a href="#2-load-sdtm-datasets">Load SDTM Datasets</a></li>
 <li><a href="#3-exploratory-analysis-and-quality-control">Exploratory Analysis and QC</a></li>
-<li>Domain-Level Cleaning</li>
+<li><a href="#3-data-cleaning-&amp;-Standardization">Data Cleaning &amp; Standardization</a></li>
 <li>Joining Data</li>
 <li>Analysis &amp; Outputs</li>
 <li>Next Steps for Pipeline Deployment</li>
@@ -119,7 +119,7 @@ It simulates the process used in regulated clinical environments (CDISC/SDTM) to
 </section>
 <section id="imports" class="level3">
 <h3 class="anchored" data-anchor-id="imports">1. Imports</h3>
-<div id="fd631832" class="cell" data-execution_count="8">
+<div id="fd631832" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd <span class="co"># data manipulation</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co"># numerical operations</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt <span class="co"># data visualization</span></span>
@@ -141,7 +141,7 @@ It simulates the process used in regulated clinical environments (CDISC/SDTM) to
 </li>
 <li><strong>VS:</strong> Vital Signs</li>
 </ul>
-<div id="75ebc4fd" class="cell" data-execution_count="10">
+<div id="75ebc4fd" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dm <span class="op">=</span> pd.read_csv(<span class="st">"data/DM.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ae <span class="op">=</span> pd.read_csv(<span class="st">"data/AE.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ex <span class="op">=</span> pd.read_csv(<span class="st">"data/EX.csv"</span>)</span>
@@ -150,29 +150,21 @@ It simulates the process used in regulated clinical environments (CDISC/SDTM) to
 </section>
 <section id="exploratory-analysis-and-quality-control" class="level3">
 <h3 class="anchored" data-anchor-id="exploratory-analysis-and-quality-control">3. Exploratory Analysis and Quality Control</h3>
-<p>Quick checks:</p>
 <ul>
-<li>Number of rows and columns<br>
-</li>
-<li>Preview the first records<br>
-</li>
 <li>Check for missing key variables<br>
 </li>
 <li>Confirm expected variables, such as <code>STUDYID</code> and <code>USUBJID</code></li>
 </ul>
-<div id="c494b79d" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DM"</span>: dm,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AE"</span>: ae,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EX"</span>: ex,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"VS"</span>: vs</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> datasets.items():</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> ==="</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Shape:"</span>, df.shape)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">list</span>(df.columns))</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    display(df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="c494b79d" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of rows and columns and view first records of each dataset</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> {<span class="st">"DM"</span>: dm, <span class="st">"AE"</span>: ae, <span class="st">"EX"</span>: ex,<span class="st">"VS"</span>: vs}</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> datasets.items():</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> ==="</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Shape:"</span>, df.shape)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Columns:"</span>, <span class="bu">list</span>(df.columns))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    display(df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 === DM ===
@@ -819,6 +811,246 @@ Columns: ['STUDYID', 'DOMAIN', 'USUBJID', 'VSSEQ', 'VSTESTCD', 'VSTEST', 'VSORRE
 
 </div>
 </div>
+</div>
+<div id="fb47bc72" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if participant ids are consistent across datasets</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dm_subjects <span class="op">=</span> <span class="bu">set</span>(dm[<span class="st">"USUBJID"</span>]) <span class="co"># unique participants ids in DM dataset</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> datasets.items():</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">!=</span> <span class="st">"DM"</span>:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        domain_subjects <span class="op">=</span> <span class="bu">set</span>(df[<span class="st">"USUBJID"</span>])</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        missing <span class="op">=</span> dm_subjects <span class="op">-</span> domain_subjects</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: Subjects missing from domain = </span><span class="sc">{</span><span class="bu">len</span>(missing)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>AE: Subjects missing from domain = 16
+EX: Subjects missing from domain = 0
+VS: Subjects missing from domain = 0</code></pre>
+</div>
+</div>
+<p>It makes sense that not all participants will be in the AE dataset since we don’t usually expect them all to present an AE.</p>
+<div id="f0c945e2" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that required columns are present and consistent across datasets</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>required_columns <span class="op">=</span> {<span class="st">"DM"</span>: [<span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"SEX"</span>, <span class="st">"ARM"</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"AE"</span>: [<span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"AESTDTC"</span>, <span class="st">"AEDECOD"</span>],</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"EX"</span>: [<span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"EXTRT"</span>, <span class="st">"EXSTDTC"</span>],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"VS"</span>: [<span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"VSTESTCD"</span>, <span class="st">"VSSTRESN"</span>]}</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> datasets.items():</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> required columns:"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> required_columns[name]:</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="kw">in</span> df.columns:</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  ✓ </span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  ✗ Missing: </span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+DM required columns:
+  ✓ STUDYID
+  ✓ USUBJID
+  ✓ SEX
+  ✓ ARM
+
+AE required columns:
+  ✓ STUDYID
+  ✓ USUBJID
+  ✓ AESTDTC
+  ✓ AEDECOD
+
+EX required columns:
+  ✓ STUDYID
+  ✓ USUBJID
+  ✓ EXTRT
+  ✓ EXSTDTC
+
+VS required columns:
+  ✓ STUDYID
+  ✓ USUBJID
+  ✓ VSTESTCD
+  ✓ VSSTRESN</code></pre>
+</div>
+</div>
+<div id="c36733d9" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Missing values across domains</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> datasets.items():</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== Missing Values in </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> ==="</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    display(df.isna().<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Missing Values in DM ===</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>STUDYID       0
+DOMAIN        0
+USUBJID       0
+SUBJID        0
+RFSTDTC       0
+RFENDTC       0
+RFXSTDTC      0
+RFXENDTC      0
+RFICDTC       0
+RFPENDTC      0
+DTHDTC      100
+DTHFL       100
+SITEID        0
+AGE           0
+AGEU          0
+SEX           0
+RACE          0
+ETHNIC        0
+ARMCD         0
+ARM           0
+ACTARMCD      0
+ACTARM        0
+COUNTRY       1
+DMDTC         0
+DMDY          0
+dtype: int64</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Missing Values in AE ===</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>STUDYID       0
+DOMAIN        0
+USUBJID       0
+AESEQ         0
+AESPID        0
+AETERM        0
+AEDECOD       0
+AEBODSYS      0
+AESOC         0
+AESEV         0
+AETOXGR       0
+AESER         0
+AEREL         0
+AEACN         0
+AEOUT         0
+AESTDTC       0
+AEENDTC      80
+AESTDY        0
+AEENDY       80
+AEDUR        80
+AECONTRT      0
+AESDTH        0
+AESLIFE       0
+AESHOSP       0
+AESDISAB      0
+AESMIE        0
+AEACNOTH    285
+dtype: int64</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Missing Values in EX ===</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>STUDYID     0
+DOMAIN      0
+USUBJID     0
+EXSEQ       0
+EXTRT       0
+EXDOSE      0
+EXDOSU      0
+EXDOSFRM    0
+EXROUTE     0
+EXDOSFRQ    0
+EXSTDTC     0
+EXENDTC     0
+VISITNUM    0
+VISIT       0
+EXDY        0
+dtype: int64</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Missing Values in VS ===</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>STUDYID        0
+DOMAIN         0
+USUBJID        0
+VSSEQ          0
+VSTESTCD       0
+VSTEST         0
+VSORRES        0
+VSORRESU       0
+VSSTRESC       0
+VSSTRESN     900
+VSSTRESU       0
+VSBLFL      4000
+VISIT          0
+VISITNUM       0
+VSDTC          0
+VSDY           0
+dtype: int64</code></pre>
+</div>
+</div>
+</section>
+<section id="data-cleaning-standardization" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-standardization">5. Data Cleaning &amp; Standardization</h3>
+<p>In this section, we perform basic cleaning and standardization to prepare the datasets for analysis.</p>
+<div id="98f0ac36" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dm.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 100 entries, 0 to 99
+Data columns (total 25 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   STUDYID   100 non-null    object 
+ 1   DOMAIN    100 non-null    object 
+ 2   USUBJID   100 non-null    object 
+ 3   SUBJID    100 non-null    object 
+ 4   RFSTDTC   100 non-null    object 
+ 5   RFENDTC   100 non-null    object 
+ 6   RFXSTDTC  100 non-null    object 
+ 7   RFXENDTC  100 non-null    object 
+ 8   RFICDTC   100 non-null    object 
+ 9   RFPENDTC  100 non-null    object 
+ 10  DTHDTC    0 non-null      float64
+ 11  DTHFL     0 non-null      float64
+ 12  SITEID    100 non-null    int64  
+ 13  AGE       100 non-null    int64  
+ 14  AGEU      100 non-null    object 
+ 15  SEX       100 non-null    object 
+ 16  RACE      100 non-null    object 
+ 17  ETHNIC    100 non-null    object 
+ 18  ARMCD     100 non-null    object 
+ 19  ARM       100 non-null    object 
+ 20  ACTARMCD  100 non-null    object 
+ 21  ACTARM    100 non-null    object 
+ 22  COUNTRY   99 non-null     object 
+ 23  DMDTC     100 non-null    object 
+ 24  DMDY      100 non-null    int64  
+dtypes: float64(2), int64(3), object(20)
+memory usage: 19.7+ KB</code></pre>
+</div>
+</div>
+<div id="59ccdb06" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># AE</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>ae[<span class="st">'AESTDTC'</span>] <span class="op">=</span> pd.to_datetime(ae[<span class="st">'AESTDTC'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>ae[<span class="st">'AEDECOD'</span>] <span class="op">=</span> ae[<span class="st">'AEDECOD'</span>].<span class="bu">str</span>.upper().<span class="bu">str</span>.strip()</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># DM</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>dm[<span class="st">'SEX'</span>] <span class="op">=</span> dm[<span class="st">'SEX'</span>].<span class="bu">str</span>.upper().<span class="bu">map</span>({<span class="st">'M'</span>:<span class="st">'M'</span>,<span class="st">'F'</span>:<span class="st">'F'</span>}).fillna(<span class="st">'UNKNOWN'</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>dm[<span class="st">'AGE'</span>] <span class="op">=</span> pd.to_numeric(dm[<span class="st">'AGE'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>dm[<span class="st">'ARM'</span>] <span class="op">=</span> dm[<span class="st">'ARM'</span>].astype(<span class="st">'category'</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># EX</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>ex[<span class="st">'EXSTDTC'</span>] <span class="op">=</span> pd.to_datetime(ex[<span class="st">'EXSTDTC'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'EXENDTC'</span> <span class="kw">in</span> ex.columns:</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    ex[<span class="st">'EXENDTC'</span>] <span class="op">=</span> pd.to_datetime(ex[<span class="st">'EXENDTC'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'EXDOSE'</span> <span class="kw">in</span> ex.columns:</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    ex[<span class="st">'EXDOSE'</span>] <span class="op">=</span> pd.to_numeric(ex[<span class="st">'EXDOSE'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>ex[<span class="st">'EXTRT'</span>] <span class="op">=</span> ex[<span class="st">'EXTRT'</span>].<span class="bu">str</span>.upper().<span class="bu">str</span>.strip()</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co"># VS</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>vs[<span class="st">'VSDTC'</span>] <span class="op">=</span> pd.to_datetime(vs[<span class="st">'VSDTC'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>vs[<span class="st">'VSSTRESN'</span>] <span class="op">=</span> pd.to_numeric(vs[<span class="st">'VSSTRESN'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>vs[<span class="st">'VSTESTCD'</span>] <span class="op">=</span> vs[<span class="st">'VSTESTCD'</span>].<span class="bu">str</span>.upper().<span class="bu">str</span>.strip()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

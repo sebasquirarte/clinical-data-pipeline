@@ -1,0 +1,29 @@
+name: Clinical Data Pipeline CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas numpy matplotlib seaborn pyspark notebook
+
+    - name: Run notebook
+      run: |
+        jupyter nbconvert --to notebook --execute clinical_data_pipeline.ipynb --output executed.ipynb
